@@ -135,11 +135,11 @@ def abrir_ventana():
 
     # Segunda fila con cajon 4
     fila_2 = ttk.PanedWindow(contenedor_principal, orient=tk.HORIZONTAL)
+
     contenedor_principal.add(fila_2)
 
     # Crear un Notebook para cajon_texto_4 en la segunda fila
     notebook_4 = ttk.Notebook(fila_2)
-
     frame = tk.Frame(notebook_4)
     text_widget = tk.Text(frame, wrap="word")
     text_widget.pack(expand=True, fill="both")
@@ -162,6 +162,7 @@ def abrir_ventana():
 
     # Configurar que el cajón 1 no sea redimensionable horizontalmente
     cajon_texto_1.configure(width=6)
+
     # Mostrar la ventana
     ventana.mainloop()
     # Hola
