@@ -15,6 +15,11 @@ def mostrar_about():
     messagebox.showinfo("About", about_text)
 
 
+def mostrar_run():
+    about_text = "Compilar programa"
+    messagebox.showinfo("Compilar", about_text)
+
+
 def vincular_cajones_texto(event):
     global cajon_texto_2
 
@@ -67,6 +72,9 @@ def abrir_ventana():
     ventana = tk.Tk()
     ventana.title("IDE Compiladores")
 
+    # Configurar el tema oscuro al inicio
+    cambiar_tema("oscuro")
+
     # Crear una barra de menú
     menu_bar = tk.Menu(ventana)
     ventana.config(menu=menu_bar)
@@ -78,15 +86,20 @@ def abrir_ventana():
     menu_bar.add_cascade(label="File", menu=file_menu)
 
     # Menú "About" con opción "IDE Compiladores"
-    about_menu = tk.Menu(menu_bar, tearoff=0)
-    about_menu.add_command(label="IDE Compiladores", command=mostrar_about)
-    menu_bar.add_cascade(label="About", menu=about_menu)
+    run_menu = tk.Menu(menu_bar, tearoff=0)
+    run_menu.add_command(label="Compilar", command=mostrar_run)
+    menu_bar.add_cascade(label="Run", menu=run_menu)
 
     # Menú "Tema" con opciones "Claro" y "Oscuro"
     tema_menu = tk.Menu(menu_bar, tearoff=0)
     tema_menu.add_command(label="Claro", command=lambda: cambiar_tema("claro"))
     tema_menu.add_command(label="Oscuro", command=lambda: cambiar_tema("oscuro"))
     menu_bar.add_cascade(label="Tema", menu=tema_menu)
+
+    # Menú "About" con opción "IDE Compiladores"
+    about_menu = tk.Menu(menu_bar, tearoff=0)
+    about_menu.add_command(label="IDE Compiladores", command=mostrar_about)
+    menu_bar.add_cascade(label="About", menu=about_menu)
 
     # Crear un contenedor principal (frame)
     contenedor_principal = ttk.PanedWindow(ventana, orient=tk.VERTICAL)
