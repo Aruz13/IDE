@@ -111,11 +111,11 @@ def abrir_ventana():
 
     # Crear cajones de texto en la primera fila
     global cajon_texto_1
-    cajon_texto_1 = tk.Text(fila_1, wrap="none", height=10, width=6)
+    cajon_texto_1 = tk.Text(fila_1, wrap="none", height=20, width=6)
     fila_1.add(cajon_texto_1)
 
     global cajon_texto_2
-    cajon_texto_2 = tk.Text(fila_1, wrap="word", height=10, width=20)
+    cajon_texto_2 = tk.Text(fila_1, wrap="word", height=20, width=150)
     fila_1.add(cajon_texto_2)
     cajon_texto_2.bind("<KeyRelease>", vincular_cajones_texto)
 
@@ -144,6 +144,7 @@ def abrir_ventana():
     notebook_3.add(frame, text=f"Codigo Intermedio")
 
     cajon_texto_3 = notebook_3
+    # cajon_texto_3 = tk.Text(fila_1, wrap="word", height=10, width=150)
     fila_1.add(cajon_texto_3)
 
     # Segunda fila con cajon 4
