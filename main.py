@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 
 
-# Prueba de update desde otra maquina.
+# Prueba de update desde otra maquina. Y otro cambio desde la web xd
 
 def abrir_nuevo_archivo():
     messagebox.showinfo("File", "Abrir nuevo archivo")
