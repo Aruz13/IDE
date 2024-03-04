@@ -2,8 +2,6 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 
 
-# Prueba de update desde otra maquina. Y otro cambio desde la web xd
-
 def abrir_nuevo_archivo():
     messagebox.showinfo("File", "Abrir nuevo archivo")
 
@@ -110,11 +108,27 @@ def abrir_ventana():
 
     # Crear un Notebook para cajon_texto_3 en la primera fila
     notebook_3 = ttk.Notebook(fila_1)
-    for i in range(5):
-        frame = tk.Frame(notebook_3)
-        text_widget = tk.Text(frame, wrap="word")
-        text_widget.pack(expand=True, fill="both")
-        notebook_3.add(frame, text=f"Pestaña {i + 1}")
+
+    frame = tk.Frame(notebook_3)
+    text_widget = tk.Text(frame, wrap="word")
+    text_widget.pack(expand=True, fill="both")
+    notebook_3.add(frame, text=f"Lexico")
+    frame = tk.Frame(notebook_3)
+    text_widget = tk.Text(frame, wrap="word")
+    text_widget.pack(expand=True, fill="both")
+    notebook_3.add(frame, text=f"Sintactico")
+    frame = tk.Frame(notebook_3)
+    text_widget = tk.Text(frame, wrap="word")
+    text_widget.pack(expand=True, fill="both")
+    notebook_3.add(frame, text=f"Semantico")
+    frame = tk.Frame(notebook_3)
+    text_widget = tk.Text(frame, wrap="word")
+    text_widget.pack(expand=True, fill="both")
+    notebook_3.add(frame, text=f"Hash Table")
+    frame = tk.Frame(notebook_3)
+    text_widget = tk.Text(frame, wrap="word")
+    text_widget.pack(expand=True, fill="both")
+    notebook_3.add(frame, text=f"Codigo Intermedio")
 
     cajon_texto_3 = notebook_3
     fila_1.add(cajon_texto_3)
@@ -125,11 +139,23 @@ def abrir_ventana():
 
     # Crear un Notebook para cajon_texto_4 en la segunda fila
     notebook_4 = ttk.Notebook(fila_2)
-    for i in range(4):
-        frame = tk.Frame(notebook_4)
-        text_widget = tk.Text(frame, wrap="word")
-        text_widget.pack(expand=True, fill="both")
-        notebook_4.add(frame, text=f"Pestaña {i + 1}")
+
+    frame = tk.Frame(notebook_4)
+    text_widget = tk.Text(frame, wrap="word")
+    text_widget.pack(expand=True, fill="both")
+    notebook_4.add(frame, text=f"Errores Lexicoa")
+    frame = tk.Frame(notebook_4)
+    text_widget = tk.Text(frame, wrap="word")
+    text_widget.pack(expand=True, fill="both")
+    notebook_4.add(frame, text=f"Errores Sintacticos")
+    frame = tk.Frame(notebook_4)
+    text_widget = tk.Text(frame, wrap="word")
+    text_widget.pack(expand=True, fill="both")
+    notebook_4.add(frame, text=f"Errores Semanticos")
+    frame = tk.Frame(notebook_4)
+    text_widget = tk.Text(frame, wrap="word")
+    text_widget.pack(expand=True, fill="both")
+    notebook_4.add(frame, text=f"Resultados")
 
     cajon_texto_4 = notebook_4
     fila_2.add(cajon_texto_4)
