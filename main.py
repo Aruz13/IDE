@@ -1,15 +1,21 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 
+
+# Prueba de update desde otra maquina.
+
 def abrir_nuevo_archivo():
     messagebox.showinfo("File", "Abrir nuevo archivo")
+
 
 def crear_nuevo_archivo():
     messagebox.showinfo("File", "Crear nuevo archivo")
 
+
 def mostrar_about():
     about_text = "IDE de la materia Compiladores"
     messagebox.showinfo("About", about_text)
+
 
 def vincular_cajones_texto(event):
     global cajon_texto_2
@@ -27,6 +33,7 @@ def vincular_cajones_texto(event):
     cajon_texto_1.tag_remove("negrita", "1.0", tk.END)
     cajon_texto_1.tag_add("negrita", f"{linea_actual}.0", f"{linea_actual}.end")
     cajon_texto_1.tag_config("negrita", font=("Helvetica", 8, "bold"))
+
 
 def actualizar_numeros_linea():
     global cajon_texto_1, cajon_texto_2
@@ -48,11 +55,13 @@ def actualizar_numeros_linea():
     # Configurar el ancho máximo del cajón de texto 1
     cajon_texto_1.config(width=6)
 
+
 def cambiar_tema(tema):
     if tema == "claro":
         ventana.tk_setPalette(background="#FFFFFF", foreground="#000000")
     elif tema == "oscuro":
         ventana.tk_setPalette(background="#2E2E2E", foreground="#FFFFFF")
+
 
 def abrir_ventana():
     # Crear una instancia de la ventana principal
@@ -105,7 +114,7 @@ def abrir_ventana():
         frame = tk.Frame(notebook_3)
         text_widget = tk.Text(frame, wrap="word")
         text_widget.pack(expand=True, fill="both")
-        notebook_3.add(frame, text=f"Pestaña {i+1}")
+        notebook_3.add(frame, text=f"Pestaña {i + 1}")
 
     cajon_texto_3 = notebook_3
     fila_1.add(cajon_texto_3)
@@ -120,7 +129,7 @@ def abrir_ventana():
         frame = tk.Frame(notebook_4)
         text_widget = tk.Text(frame, wrap="word")
         text_widget.pack(expand=True, fill="both")
-        notebook_4.add(frame, text=f"Pestaña {i+1}")
+        notebook_4.add(frame, text=f"Pestaña {i + 1}")
 
     cajon_texto_4 = notebook_4
     fila_2.add(cajon_texto_4)
@@ -129,7 +138,8 @@ def abrir_ventana():
     cajon_texto_1.configure(width=6)
     # Mostrar la ventana
     ventana.mainloop()
-    #Hola
+    # Hola
+
 
 # Llamar a la función para abrir la ventana
 abrir_ventana()
