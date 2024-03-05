@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
-
+from PIL import Image, ImageTk
 
 nombre_archivo_guardado = ""
 cambios_no_guardados = False
@@ -53,6 +53,7 @@ def guardar_archivo_como():
 
 
 def guardar_archivo():
+    print("hola")
     global cajon_texto_2, nombre_archivo_guardado, cambios_no_guardados
 
     # Verificar si ya hay un archivo abierto
@@ -163,6 +164,30 @@ def abrir_ventana():
     tema_menu.add_command(label="Claro", command=lambda: cambiar_tema("claro"))
     tema_menu.add_command(label="Oscuro", command=lambda: cambiar_tema("oscuro"))
     menu_bar.add_cascade(label="Tema", menu=tema_menu)
+
+    # Botones con iconos
+    icono_nuevo = Image.open("images/new.png")  # Ruta al icono de nuevo
+    icono_nuevo = icono_nuevo.resize((20,20), Image.ANTIALIAS)
+    icono_nuevo = ImageTk.PhotoImage(icono_nuevo)
+    boton_nuevo = ttk.Button(menu_bar, image=icono_nuevo, command=crear_nuevo_archivo)
+    boton_nuevo.image = icono_nuevo  # Conservar referencia para evitar que se elimine por el recolector de basura
+    menu_bar.add_cascade(label="Nuevo", command=crear_nuevo_archivo, image=icono_nuevo, compound=tk.LEFT)
+
+    icono_abrir = Image.open("images/open.png")  # Ruta al icono de abrir
+    icono_abrir = icono_abrir.resize((20,20), Image.ANTIALIAS)
+    icono_abrir = ImageTk.PhotoImage(icono_abrir)
+    boton_abrir = ttk.Button(menu_bar, image=icono_abrir, command=abrir_nuevo_archivo)
+    boton_abrir.image = icono_abrir
+
+    menu_bar.add_cascade(label="Abrir", command=abrir_nuevo_archivo, image=icono_abrir, compound=tk.LEFT)
+
+    icono_guardar = Image.open("images/save.png")  # Ruta al icono de guardar
+    icono_guardar = icono_guardar.resize((20,20), Image.ANTIALIAS)
+    icono_guardar = ImageTk.PhotoImage(icono_guardar)
+    boton_guardar = ttk.Button(menu_bar, image=icono_guardar, command=guardar_archivo)
+    boton_guardar.image = icono_guardar
+
+    menu_bar.add_cascade(label="Guardar", command=guardar_archivo, image=icono_guardar, compound=tk.LEFT)
 
     # Menú "About" con opción "IDE Compiladores"
     about_menu = tk.Menu(menu_bar, tearoff=0)
