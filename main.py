@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, messagebox, filedialog
+from tkinter import ttk, messagebox, filedialog, scrolledtext
 from PIL import Image, ImageTk
 
 nombre_archivo_guardado = ""
@@ -104,6 +104,9 @@ def vincular_cajones_texto(event):
     cajon_texto_1.tag_add("negrita", f"{linea_actual}.0", f"{linea_actual}.end")
     cajon_texto_1.tag_config("negrita", font=("Helvetica", 8, "bold"))
 
+    # Vincular el desplazamiento de ambos cajones de texto
+    desplazamiento_y = cajon_texto_2.yview()[0]
+    cajon_texto_1.yview_moveto(desplazamiento_y)
 
 def actualizar_numeros_linea():
     global cajon_texto_1, cajon_texto_2
@@ -204,14 +207,18 @@ def abrir_ventana():
 
     # Crear cajones de texto en la primera fila
     global cajon_texto_1
-    cajon_texto_1 = tk.Text(fila_1, wrap="none", height=20, width=6)
+    cajon_texto_1 = scrolledtext.ScrolledText(ventana, wrap=tk.WORD, height=10, width=40)
     # cajon_texto_1.pack(expand=False, fill="both")
     fila_1.add(cajon_texto_1)
 
     global cajon_texto_2
-    cajon_texto_2 = tk.Text(fila_1, wrap="word", height=20, width=150)
+    cajon_texto_2 = scrolledtext.ScrolledText(ventana, wrap=tk.WORD, height=10, width=40)
     fila_1.add(cajon_texto_2)
+
+    cajon_texto_1.pack(side=tk.LEFT, fill=tk.Y)
+    cajon_texto_2.pack(side=tk.RIGHT, fill=tk.Y)
     cajon_texto_2.bind("<KeyRelease>", vincular_cajones_texto)
+    cajon_texto_1.config(yscrollcommand=cajon_texto_2.yview)
 
     # Crear un Notebook para cajon_texto_3 en la primera fila
     notebook_3 = ttk.Notebook(fila_1)
