@@ -1,13 +1,77 @@
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox, filedialog
+
+
+nombre_archivo_guardado = ""
+cambios_no_guardados = False
 
 
 def abrir_nuevo_archivo():
-    messagebox.showinfo("File", "Abrir nuevo archivo")
+    global cajon_texto_2, nombre_archivo_abierto, nombre_archivo_guardado
+
+    # Abrir un cuadro de diálogo para seleccionar el archivo
+    nombre_archivo_abierto = filedialog.askopenfilename(filetypes=[("Archivos de texto", "*.txt")])
+    nombre_archivo_guardado = nombre_archivo_abierto
+    # Verificar si se seleccionó un archivo
+    if nombre_archivo_abierto:
+        # Leer el contenido del archivo seleccionado y cargarlo en el cajón de texto 2
+        with open(nombre_archivo_abierto, 'r') as archivo:
+            contenido = archivo.read()
+            cajon_texto_2.delete("1.0", tk.END)  # Limpiar el contenido actual
+            cajon_texto_2.insert("1.0", contenido)
 
 
 def crear_nuevo_archivo():
-    messagebox.showinfo("File", "Crear nuevo archivo")
+    global cajon_texto_2, nombre_archivo_guardado, cambios_no_guardados
+
+    # Verificar si hay cambios no guardados
+    if cambios_no_guardados:
+        # Mostrar ventana de confirmación
+        respuesta = messagebox.askyesno("Confirmar", "¿Está seguro de abrir un nuevo archivo? Se perderán los cambios no guardados.")
+        if not respuesta:
+            return  # Si el usuario elige cancelar, no hacer nada
+
+    # Limpiar el cajón de texto 2 y la variable de nombre de archivo guardado
+    cajon_texto_2.delete("1.0", tk.END)
+    nombre_archivo_guardado = ""
+    cambios_no_guardados = False
+
+
+def guardar_archivo_como():
+    global cajon_texto_2, nombre_archivo_guardado, cambios_no_guardados
+
+    # Abrir un cuadro de diálogo para seleccionar la ubicación y el nombre del archivo
+    nombre_archivo_guardado = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Archivos de texto", "*.txt")])
+
+    # Verificar si se seleccionó un archivo
+    if nombre_archivo_guardado:
+        with open(nombre_archivo_guardado, 'w') as archivo:
+            # Obtener el contenido del cajón de texto 2 y escribirlo en el archivo
+            contenido = cajon_texto_2.get("1.0", tk.END)
+            archivo.write(contenido)
+            cambios_no_guardados = False
+
+
+def guardar_archivo():
+    global cajon_texto_2, nombre_archivo_guardado, cambios_no_guardados
+
+    # Verificar si ya hay un archivo abierto
+    if nombre_archivo_guardado:
+        # Sobrescribir el archivo existente
+        with open(nombre_archivo_guardado, 'w') as archivo:
+            contenido = cajon_texto_2.get("1.0", tk.END)
+            archivo.write(contenido)
+            cambios_no_guardados = False
+    else:
+        # Abrir un cuadro de diálogo para seleccionar la ubicación y el nombre del archivo
+        nombre_archivo_guardado = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Archivos de texto", "*.txt")])
+
+        # Verificar si se seleccionó un archivo
+        if nombre_archivo_guardado:
+            with open(nombre_archivo_guardado, 'w') as archivo:
+                contenido = cajon_texto_2.get("1.0", tk.END)
+                archivo.write(contenido)
+                cambios_no_guardados = False
 
 
 def mostrar_about():
@@ -21,7 +85,9 @@ def mostrar_run():
 
 
 def vincular_cajones_texto(event):
-    global cajon_texto_2
+    global cajon_texto_2, cambios_no_guardados
+
+    cambios_no_guardados = True
 
     # Obtener la línea actual del cajón de texto 2
     linea_actual = int(cajon_texto_2.index(tk.CURRENT).split('.')[0])
@@ -83,6 +149,8 @@ def abrir_ventana():
     file_menu = tk.Menu(menu_bar, tearoff=0)
     file_menu.add_command(label="Nuevo", command=crear_nuevo_archivo)
     file_menu.add_command(label="Abrir", command=abrir_nuevo_archivo)
+    file_menu.add_command(label="Guardar", command=guardar_archivo)
+    file_menu.add_command(label="Guardar Como", command=guardar_archivo_como)
     menu_bar.add_cascade(label="File", menu=file_menu)
 
     # Menú "About" con opción "IDE Compiladores"
@@ -112,6 +180,7 @@ def abrir_ventana():
     # Crear cajones de texto en la primera fila
     global cajon_texto_1
     cajon_texto_1 = tk.Text(fila_1, wrap="none", height=20, width=6)
+    # cajon_texto_1.pack(expand=False, fill="both")
     fila_1.add(cajon_texto_1)
 
     global cajon_texto_2
@@ -157,7 +226,7 @@ def abrir_ventana():
     frame = tk.Frame(notebook_4)
     text_widget = tk.Text(frame, wrap="word")
     text_widget.pack(expand=True, fill="both")
-    notebook_4.add(frame, text=f"Errores Lexicoa")
+    notebook_4.add(frame, text=f"Errores Lexicos")
     frame = tk.Frame(notebook_4)
     text_widget = tk.Text(frame, wrap="word")
     text_widget.pack(expand=True, fill="both")
