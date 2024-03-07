@@ -104,9 +104,36 @@ def cambiar_tema(tema):
 
 def actualizar_numeros_linea(event=None):
     # Actualizar los números de línea
+    global auxnum
     cajon_texto_1.config(state="normal")
-    cajon_texto_1.insert(tk.END,'\n'+cajon_texto_2.index(tk.END))
+
+    # Obtener el número actual de líneas en el cajón de texto 2
+    num_lineas_actual = int(cajon_texto_2.index(tk.END).split('.')[0])
+    # print(cajon_texto_2.index(tk.INSERT), num_lineas_actual)
+    if auxnum > 2:
+        # Si se agregaron líneas
+        if num_lineas_actual > auxnum:
+            # Agregar números de línea adicionales
+            for i in range(auxnum + 1, num_lineas_actual + 1):
+                cajon_texto_1.insert(tk.END, f"{i}\n")
+
+            auxnum = num_lineas_actual
+        else:
+            # Si se eliminaron líneas
+            for i in range(auxnum, num_lineas_actual, -1):
+                cajon_texto_1.delete(f"{i}.0", f"{i + 1}.0")
+
+            auxnum = num_lineas_actual
+    else:
+        # Si es la primera vez, inicializar los números de línea
+        cajon_texto_1.delete(1.0, tk.END)
+        for i in range(1, num_lineas_actual + 1):
+            cajon_texto_1.insert(tk.END, f"{i}\n")
+
+        auxnum = num_lineas_actual
+
     cajon_texto_1.config(state="disabled")
+    cajon_texto_1.yview_moveto(cajon_texto_2.yview()[0])
 
 def scroll_both_widgets(event):
     # Resaltar la línea actual donde está el cursor
@@ -116,7 +143,9 @@ def scroll_both_widgets(event):
     cajon_texto_2.tag_add(tag_name, f"{current_line}.0", f"{current_line}.end+1c")
     cajon_texto_2.tag_config(tag_name, background="lightgray", foreground="black")
 
-    cajon_texto_1.yview_moveto(cajon_texto_2.yview()[0])
+    num_lineas_actual = int(cajon_texto_2.index(tk.END).split('.')[0])
+    print(cajon_texto_2.index(tk.INSERT), num_lineas_actual)
+
 
 
 def scroll_Mouse(event):
@@ -124,7 +153,7 @@ def scroll_Mouse(event):
 
 
 def scroll_Mouse1(event):
-    cajon_texto_1.yview_moveto(cajon_texto_2.yview()[0])
+    cajon_texto_2.yview_moveto(cajon_texto_1.yview()[0])
 
 
 def abrir_ventana():
@@ -134,8 +163,8 @@ def abrir_ventana():
     ventana.title("IDE Compiladores")
     sistema_operativo = platform.system()
     print(sistema_operativo)
-
-
+    global auxnum
+    auxnum = 0
     # Crear una barra de menú
     menu_bar = tk.Menu(ventana)
     ventana.config(menu=menu_bar)
@@ -199,7 +228,7 @@ def abrir_ventana():
 
     # Crear cajones de texto en la primera fila
     global cajon_texto_1
-    cajon_texto_1 = tk.Text(fila_1, width=4, padx=4, wrap="none", state="disabled")
+    cajon_texto_1 = tk.Text(fila_1, width=4, wrap="none", state="disabled")
     cajon_texto_1.pack(side=tk.LEFT, fill=tk.Y)
     fila_1.add(cajon_texto_1)
     cajon_texto_1.insert(tk.END,"1")
@@ -216,6 +245,7 @@ def abrir_ventana():
 
     # Vincular el desplazamiento del widget de números de línea con el widget de texto
     cajon_texto_2.bind('<KeyRelease>', scroll_both_widgets)
+
     if sistema_operativo == "Linux":
         cajon_texto_2.bind('<Button-4>', scroll_Mouse)
         cajon_texto_2.bind('<Button-5>', scroll_Mouse)
