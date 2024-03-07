@@ -4,7 +4,7 @@ from PIL import Image, ImageTk
 
 nombre_archivo_guardado = ""
 cambios_no_guardados = False
-
+# Hola Hector
 
 def abrir_nuevo_archivo():
     global cajon_texto_2, nombre_archivo_abierto, nombre_archivo_guardado
