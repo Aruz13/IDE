@@ -88,6 +88,8 @@ def mostrar_about():
 def cerrar_archivo():
     print("cerrar")
     cajon_texto_2.delete(1.0, "end")
+    actualizar_ln_col(event=None)
+    actualizar_numeros_linea(event=None)
 
 
 def mostrar_run():
@@ -104,7 +106,7 @@ def cambiar_tema(tema):
 
 def actualizar_numeros_linea(event=None):
     # Actualizar los números de línea
-    global auxnum
+    global auxnum, barra_estado
     cajon_texto_1.config(state="normal")
 
     # Obtener el número actual de líneas en el cajón de texto 2
@@ -146,11 +148,22 @@ def scroll_both_widgets(event):
     num_lineas_actual = int(cajon_texto_2.index(tk.END).split('.')[0])
     print(cajon_texto_2.index(tk.INSERT), num_lineas_actual)
 
+    posicion = cajon_texto_2.index(tk.INSERT)
+    fila, columna = posicion.split('.')
+    barra_estado.config(text=f"Ln {fila}, Col {columna}")
+
 
 
 def scroll_Mouse(event):
     cajon_texto_1.yview_moveto(cajon_texto_2.yview()[0])
+    posicion = cajon_texto_2.index(tk.INSERT)
+    fila, columna = posicion.split('.')
+    barra_estado.config(text=f"Ln {fila}, Col {columna}")
 
+def actualizar_ln_col(event):
+    posicion = cajon_texto_2.index(tk.INSERT)
+    fila, columna = posicion.split('.')
+    barra_estado.config(text=f"Ln {fila}, Col {columna}")
 
 def scroll_Mouse1(event):
     cajon_texto_2.yview_moveto(cajon_texto_1.yview()[0])
@@ -222,6 +235,11 @@ def abrir_ventana():
     contenedor_principal = ttk.PanedWindow(ventana, orient=tk.VERTICAL)
     contenedor_principal.pack(expand=True, fill="both")
 
+    global barra_estado
+    # Crear la barra de estado en la parte inferior
+    barra_estado = tk.Label(ventana, text="Ln 1, Col 0", bd=1, relief=tk.SUNKEN, anchor=tk.W)
+    barra_estado.pack(side=tk.BOTTOM, fill=tk.X)
+
     # Primera fila con cajones 1, 2 y 3
     fila_1 = ttk.PanedWindow(contenedor_principal, orient=tk.HORIZONTAL)
     contenedor_principal.add(fila_1)
@@ -245,6 +263,8 @@ def abrir_ventana():
 
     # Vincular el desplazamiento del widget de números de línea con el widget de texto
     cajon_texto_2.bind('<KeyRelease>', scroll_both_widgets)
+    cajon_texto_2.bind('<Motion>', actualizar_ln_col)
+    cajon_texto_2.bind('<ButtonRelease-1>', actualizar_ln_col)
 
     if sistema_operativo == "Linux":
         cajon_texto_2.bind('<Button-4>', scroll_Mouse)
