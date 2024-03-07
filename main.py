@@ -1,10 +1,12 @@
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 from PIL import Image, ImageTk
+import platform
 
 nombre_archivo_guardado = ""
 cambios_no_guardados = False
 # Hola Hector
+
 
 def abrir_nuevo_archivo():
     global cajon_texto_2, nombre_archivo_abierto, nombre_archivo_guardado
@@ -112,15 +114,6 @@ def scroll_both_widgets(event):
     cajon_texto_2.tag_add(tag_name, f"{current_line}.0", f"{current_line}.end+1c")
     cajon_texto_2.tag_config(tag_name, background="lightgray", foreground="black")
 
-    # Obtener el número de línea actual
-    linea_actual = cajon_texto_2.index(tk.INSERT).split('.')[0]
-
-    # Obtener el número total de líneas en el widget
-    total_lineas = cajon_texto_2.index(tk.END).split('.')[0]
-
-    print("linea_actual", linea_actual)
-    print("Primera linea", cajon_texto_2.index("@0,1").split('.')[0])
-    print(cajon_texto_2.yview()[0])
     cajon_texto_1.yview_moveto(cajon_texto_2.yview()[0])
 
 
@@ -137,6 +130,9 @@ def abrir_ventana():
     global ventana
     ventana = tk.Tk()
     ventana.title("IDE Compiladores")
+    sistema_operativo = platform.system()
+    print(sistema_operativo)
+
 
     # Crear una barra de menú
     menu_bar = tk.Menu(ventana)
@@ -216,10 +212,11 @@ def abrir_ventana():
 
     # Vincular el desplazamiento del widget de números de línea con el widget de texto
     cajon_texto_2.bind('<KeyRelease>', scroll_both_widgets)
-    cajon_texto_2.bind('<Button-4>', scroll_Mouse)
-    cajon_texto_2.bind('<Button-5>', scroll_Mouse)
-    cajon_texto_1.bind('<Button-4>', scroll_Mouse)
-    cajon_texto_1.bind('<Button-5>', scroll_Mouse)
+    if sistema_operativo == "Linux":
+        cajon_texto_2.bind('<Button-4>', scroll_Mouse)
+        cajon_texto_2.bind('<Button-5>', scroll_Mouse)
+        cajon_texto_1.bind('<Button-4>', scroll_Mouse)
+        cajon_texto_1.bind('<Button-5>', scroll_Mouse)
     
     # Crear un Notebook para cajon_texto_3 en la primera fila
     notebook_3 = ttk.Notebook(fila_1)
