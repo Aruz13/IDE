@@ -85,6 +85,11 @@ def mostrar_about():
     messagebox.showinfo("About", about_text)
 
 
+def cerrar_archivo():
+    print("cerrar")
+    cajon_texto_2.delete(1.0, "end")
+
+
 def mostrar_run():
     about_text = "Compilar programa"
     messagebox.showinfo("Compilar", about_text)
@@ -100,10 +105,7 @@ def cambiar_tema(tema):
 def actualizar_numeros_linea(event=None):
     # Actualizar los números de línea
     cajon_texto_1.config(state="normal")
-    cajon_texto_1.delete(1.0, tk.END)
-    line_count = cajon_texto_2.get("1.0", tk.END).count('\n')
-    lines = '\n'.join(str(i) for i in range(1, line_count + 2))
-    cajon_texto_1.insert(tk.END, lines)
+    cajon_texto_1.insert(tk.END,'\n'+cajon_texto_2.index(tk.END))
     cajon_texto_1.config(state="disabled")
 
 def scroll_both_widgets(event):
@@ -163,7 +165,7 @@ def abrir_ventana():
     icono_nuevo = ImageTk.PhotoImage(icono_nuevo)
     boton_nuevo = ttk.Button(menu_bar, image=icono_nuevo, command=crear_nuevo_archivo)
     boton_nuevo.image = icono_nuevo  # Conservar referencia para evitar que se elimine por el recolector de basura
-    menu_bar.add_cascade(label="Nuevo", command=crear_nuevo_archivo, image=icono_nuevo, compound=tk.LEFT)
+    menu_bar.add_cascade(label="Nuevo", command=crear_nuevo_archivo, compound=tk.LEFT)
 
     icono_abrir = Image.open("images/open.png")  # Ruta al icono de abrir
     icono_abrir = icono_abrir.resize((20,20), Image.LANCZOS)
@@ -171,7 +173,7 @@ def abrir_ventana():
     boton_abrir = ttk.Button(menu_bar, image=icono_abrir, command=abrir_nuevo_archivo)
     boton_abrir.image = icono_abrir
 
-    menu_bar.add_cascade(label="Abrir", command=abrir_nuevo_archivo, image=icono_abrir, compound=tk.LEFT)
+    menu_bar.add_cascade(label="Abrir", command=abrir_nuevo_archivo, compound=tk.LEFT)
 
     icono_guardar = Image.open("images/save.png")  # Ruta al icono de guardar
     icono_guardar = icono_guardar.resize((20,20), Image.LANCZOS)
@@ -179,7 +181,8 @@ def abrir_ventana():
     boton_guardar = ttk.Button(menu_bar, image=icono_guardar, command=guardar_archivo)
     boton_guardar.image = icono_guardar
 
-    menu_bar.add_cascade(label="Guardar", command=guardar_archivo, image=icono_guardar, compound=tk.LEFT)
+    menu_bar.add_cascade(label="Guardar", command=guardar_archivo, compound=tk.LEFT)
+    menu_bar.add_cascade(label="Cerrar", command=cerrar_archivo, compound=tk.LEFT)
 
     # Menú "About" con opción "IDE Compiladores"
     about_menu = tk.Menu(menu_bar, tearoff=0)
@@ -199,6 +202,7 @@ def abrir_ventana():
     cajon_texto_1 = tk.Text(fila_1, width=4, padx=4, wrap="none", state="disabled")
     cajon_texto_1.pack(side=tk.LEFT, fill=tk.Y)
     fila_1.add(cajon_texto_1)
+    cajon_texto_1.insert(tk.END,"1")
 
     global cajon_texto_2
     cajon_texto_2 = tk.Text(fila_1, wrap="none", insertbackground="black")
@@ -217,7 +221,8 @@ def abrir_ventana():
         cajon_texto_2.bind('<Button-5>', scroll_Mouse)
         cajon_texto_1.bind('<Button-4>', scroll_Mouse)
         cajon_texto_1.bind('<Button-5>', scroll_Mouse)
-    
+    else:
+        cajon_texto_2.bind('<MouseWheel>', scroll_Mouse)
     # Crear un Notebook para cajon_texto_3 en la primera fila
     notebook_3 = ttk.Notebook(fila_1)
 
