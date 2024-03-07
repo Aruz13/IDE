@@ -19,6 +19,9 @@ def abrir_nuevo_archivo():
             contenido = archivo.read()
             cajon_texto_2.delete("1.0", tk.END)  # Limpiar el contenido actual
             cajon_texto_2.insert("1.0", contenido)
+            actualizar_numeros_linea()
+            scroll_Mouse(0)
+            scroll_both_widgets(0)
 
 
 def crear_nuevo_archivo():
@@ -85,47 +88,6 @@ def mostrar_run():
     messagebox.showinfo("Compilar", about_text)
 
 
-def vincular_cajones_texto(event):
-    global cajon_texto_2, cambios_no_guardados
-
-    cambios_no_guardados = True
-
-    # Obtener la línea actual del cajón de texto 2
-    linea_actual = int(cajon_texto_2.index(tk.CURRENT).split('.')[0])
-
-    # Obtener el texto de la línea actual en el cajón de texto 2
-    texto_linea_actual = cajon_texto_2.get(f"{linea_actual}.0", f"{linea_actual}.end")
-
-    # Actualizar el cajón de texto 1 con los números de línea
-    actualizar_numeros_linea()
-
-    # Resaltar la línea actual en negrita
-    cajon_texto_1.tag_remove("negrita", "1.0", tk.END)
-    cajon_texto_1.tag_add("negrita", f"{linea_actual}.0", f"{linea_actual}.end")
-    cajon_texto_1.tag_config("negrita", font=("Helvetica", 8, "bold"))
-
-
-def actualizar_numeros_linea():
-    global cajon_texto_1, cajon_texto_2
-
-    # Obtener la primera y última línea visible en el cajón de texto 2
-    primera_linea_visible = int(cajon_texto_2.index("@0,0").split('.')[0])
-    ultima_linea_visible = int(cajon_texto_2.index("@0,99999999999999").split('.')[0])
-
-    # Calcular el rango de líneas para prellenar el cajón de texto 1
-    rango_prellenado = range(max(1, primera_linea_visible - 10), max(ultima_linea_visible + 10, 1))
-
-    # Borrar el contenido actual del cajón de texto 1
-    cajon_texto_1.delete("1.0", tk.END)
-
-    # Agregar números de línea al cajón de texto 1
-    for i in rango_prellenado:
-        cajon_texto_1.insert(tk.END, f"{i}\n")
-
-    # Configurar el ancho máximo del cajón de texto 1
-    cajon_texto_1.config(width=6)
-
-
 def cambiar_tema(tema):
     if tema == "claro":
         ventana.tk_setPalette(background="#FFFFFF", foreground="#000000")
@@ -133,14 +95,48 @@ def cambiar_tema(tema):
         ventana.tk_setPalette(background="#2E2E2E", foreground="#FFFFFF")
 
 
+def actualizar_numeros_linea(event=None):
+    # Actualizar los números de línea
+    cajon_texto_1.config(state="normal")
+    cajon_texto_1.delete(1.0, tk.END)
+    line_count = cajon_texto_2.get("1.0", tk.END).count('\n')
+    lines = '\n'.join(str(i) for i in range(1, line_count + 2))
+    cajon_texto_1.insert(tk.END, lines)
+    cajon_texto_1.config(state="disabled")
+
+def scroll_both_widgets(event):
+    # Resaltar la línea actual donde está el cursor
+    current_line = cajon_texto_2.index(tk.INSERT).split('.')[0]
+    tag_name = "highlight"
+    cajon_texto_2.tag_delete(tag_name)
+    cajon_texto_2.tag_add(tag_name, f"{current_line}.0", f"{current_line}.end+1c")
+    cajon_texto_2.tag_config(tag_name, background="lightgray", foreground="black")
+
+    # Obtener el número de línea actual
+    linea_actual = cajon_texto_2.index(tk.INSERT).split('.')[0]
+
+    # Obtener el número total de líneas en el widget
+    total_lineas = cajon_texto_2.index(tk.END).split('.')[0]
+
+    print("linea_actual", linea_actual)
+    print("Primera linea", cajon_texto_2.index("@0,1").split('.')[0])
+    print(cajon_texto_2.yview()[0])
+    cajon_texto_1.yview_moveto(cajon_texto_2.yview()[0])
+
+
+def scroll_Mouse(event):
+    cajon_texto_1.yview_moveto(cajon_texto_2.yview()[0])
+
+
+def scroll_Mouse1(event):
+    cajon_texto_1.yview_moveto(cajon_texto_2.yview()[0])
+
+
 def abrir_ventana():
     # Crear una instancia de la ventana principal
     global ventana
     ventana = tk.Tk()
     ventana.title("IDE Compiladores")
-
-    # Configurar el tema oscuro al inicio
-    cambiar_tema("oscuro")
 
     # Crear una barra de menú
     menu_bar = tk.Menu(ventana)
@@ -167,14 +163,14 @@ def abrir_ventana():
 
     # Botones con iconos
     icono_nuevo = Image.open("images/new.png")  # Ruta al icono de nuevo
-    icono_nuevo = icono_nuevo.resize((20,20), Image.ANTIALIAS)
+    icono_nuevo = icono_nuevo.resize((20,20), Image.LANCZOS)
     icono_nuevo = ImageTk.PhotoImage(icono_nuevo)
     boton_nuevo = ttk.Button(menu_bar, image=icono_nuevo, command=crear_nuevo_archivo)
     boton_nuevo.image = icono_nuevo  # Conservar referencia para evitar que se elimine por el recolector de basura
     menu_bar.add_cascade(label="Nuevo", command=crear_nuevo_archivo, image=icono_nuevo, compound=tk.LEFT)
 
     icono_abrir = Image.open("images/open.png")  # Ruta al icono de abrir
-    icono_abrir = icono_abrir.resize((20,20), Image.ANTIALIAS)
+    icono_abrir = icono_abrir.resize((20,20), Image.LANCZOS)
     icono_abrir = ImageTk.PhotoImage(icono_abrir)
     boton_abrir = ttk.Button(menu_bar, image=icono_abrir, command=abrir_nuevo_archivo)
     boton_abrir.image = icono_abrir
@@ -182,7 +178,7 @@ def abrir_ventana():
     menu_bar.add_cascade(label="Abrir", command=abrir_nuevo_archivo, image=icono_abrir, compound=tk.LEFT)
 
     icono_guardar = Image.open("images/save.png")  # Ruta al icono de guardar
-    icono_guardar = icono_guardar.resize((20,20), Image.ANTIALIAS)
+    icono_guardar = icono_guardar.resize((20,20), Image.LANCZOS)
     icono_guardar = ImageTk.PhotoImage(icono_guardar)
     boton_guardar = ttk.Button(menu_bar, image=icono_guardar, command=guardar_archivo)
     boton_guardar.image = icono_guardar
@@ -204,15 +200,27 @@ def abrir_ventana():
 
     # Crear cajones de texto en la primera fila
     global cajon_texto_1
-    cajon_texto_1 = tk.Text(fila_1, wrap="none", height=20, width=6)
-    # cajon_texto_1.pack(expand=False, fill="both")
+    cajon_texto_1 = tk.Text(fila_1, width=4, padx=4, wrap="none", state="disabled")
+    cajon_texto_1.pack(side=tk.LEFT, fill=tk.Y)
     fila_1.add(cajon_texto_1)
 
     global cajon_texto_2
-    cajon_texto_2 = tk.Text(fila_1, wrap="word", height=20, width=150)
+    cajon_texto_2 = tk.Text(fila_1, wrap="none", insertbackground="black")
+    cajon_texto_2.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
     fila_1.add(cajon_texto_2)
-    cajon_texto_2.bind("<KeyRelease>", vincular_cajones_texto)
+    # cajon_texto_2.bind("<KeyRelease>", vincular_cajones_texto)
 
+    # Vincular la actualización de los números de línea con el desplazamiento del texto
+    cajon_texto_2.bind('<Configure>', actualizar_numeros_linea)
+    cajon_texto_2.bind('<Key>', actualizar_numeros_linea)
+
+    # Vincular el desplazamiento del widget de números de línea con el widget de texto
+    cajon_texto_2.bind('<KeyRelease>', scroll_both_widgets)
+    cajon_texto_2.bind('<Button-4>', scroll_Mouse)
+    cajon_texto_2.bind('<Button-5>', scroll_Mouse)
+    cajon_texto_1.bind('<Button-4>', scroll_Mouse)
+    cajon_texto_1.bind('<Button-5>', scroll_Mouse)
+    
     # Crear un Notebook para cajon_texto_3 en la primera fila
     notebook_3 = ttk.Notebook(fila_1)
 
@@ -267,9 +275,6 @@ def abrir_ventana():
 
     cajon_texto_4 = notebook_4
     fila_2.add(cajon_texto_4)
-
-    # Configurar que el cajón 1 no sea redimensionable horizontalmente
-    cajon_texto_1.configure(width=6)
 
     # Mostrar la ventana
     ventana.mainloop()
